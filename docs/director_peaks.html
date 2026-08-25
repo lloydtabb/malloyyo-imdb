@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Director Peaks · malloyyo-imdb</title>
+<link rel="stylesheet" href="./assets/site.css">
+
+</head>
+<body>
+<nav class="dash-nav"><a class="brand" href="./" title="Home" aria-label="Home"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 10.2 12 3.5l9 6.7"/><path d="M5.2 8.9V20h13.6V8.9"/><path d="M9.6 20v-6.2h4.8V20"/></svg></a><span class="sep"></span><a href="./director_peaks.html" class="on">Director Peaks</a><a href="./genre_pairs.html">Genre Combinations</a><a href="./works_together.html">People that worked together</a><a href="./about.html">About</a></nav>
+<div id="root"></div>
+<script>
+window.__DASHBOARD__ = {"name":"director_peaks","query":"director_peaks_dash","title":"Director Peaks","description":"How old was each director when they made the film that dominated its year","entryFile":"dashboards/director_peaks.malloy"};
+// Given SPECS (label/type/default/suggest) are introspected from the model's
+// given: declarations at BUILD time — the runtime reads them from here to draw
+// controls and seed initial values. Without them there are no controls and
+// every given starts empty.
+window.__GIVENS__ = [{"name":"GENRE","type":"filter\u003cstring\u003e","filterType":"string","default":"","tags":{"label":"Genre"},"suggest":{"source":"movies","dimension":"genre"}},{"name":"MIN_YEAR_TITLES","type":"filter\u003cnumber\u003e","filterType":"number","default":"\u003e= 20","tags":{"label":"Min Titles in Release Year"}},{"name":"MIN_FILMS","type":"filter\u003cnumber\u003e","filterType":"number","default":"\u003e= 3","tags":{"label":"Min Films by Director"}}];
+// __INITIAL_GIVENS__ is NOT set here on purpose: the entry bundle sets it from
+// location.search using shared/givens-url, the same encoder the dev server uses.
+// An inline copy is what drifted last time (it stripped the dollar-sign prefix
+// the runtime keys off, so every shareable link fell back to defaults).
+</script>
+<script src="./assets/model-files.js"></script>
+<script type="module" src="./assets/director_peaks.js"></script>
+</body>
+</html>

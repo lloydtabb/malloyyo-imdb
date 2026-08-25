@@ -17,6 +17,11 @@ given:
 source: people is people_table extend {
   // cast, crew, everyone involved in movies
   primary_key: nconst
+
+  // nconst IS the IMDb person id, so the page needs no lookup — the same deal
+  // as tconst and movie_url.
+  # link
+  dimension: person_url is concat('https://www.imdb.com/name/', nconst)
 }
 
 source: principals is principals_table extend {
@@ -116,6 +121,15 @@ source: movies is titles_table extend {
 
     # drill {to=[works_together] given=NAME}
     name2 is principals2.people.primaryName
+
+    // IMDb pages for the two flattened people. Note these key off nconst while
+    // `name`/`name2` are primaryName, which is NOT unique — group by the url
+    // (or nconst) alongside the name whenever two people sharing a name must
+    // not be merged into one row.
+    # link
+    name_url is principals.people.person_url
+    # link
+    name2_url is principals2.people.person_url
 
     # number="####" label="Year"
     release_year is startYear
