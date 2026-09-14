@@ -1,20 +1,5 @@
 ##! experimental.virtual_source experimental.persistence experimental.join_types experimental.givens experimental.access_modifiers
 import "../imdb.malloy"
-// Imports aren't transitive — titles_table lives in storage.malloy and
-// imdb.malloy importing it doesn't bring it here.
-import "../storage.malloy"
-
-// When did a director make their biggest film, and how old were they?
-//
-// Raw vote counts can't answer this: IMDb votes accumulate from a modern user
-// base, so a 2013 film outdraws a 1976 one regardless of how each landed in its
-// own time. Every measure here is instead a film's SHARE OF THE VOTES CAST FOR
-// ITS RELEASE YEAR, which puts 1976 and 2013 on the same footing.
-//
-// The catch is the denominator. A year holding three films hands one of them a
-// huge share; MIN_YEAR_TITLES is the floor that excludes those years, and it is
-// a control rather than a constant so the artifacts can be seen. Drop it to 1
-// and the silent era plus the current partial year flood the top.
 
 given:
   // Years thinner than this are dropped. Default 20 clears the pre-1930 rows
@@ -35,7 +20,7 @@ given:
 source: movies_norm is movies extend {
   // Votes and film count per release year — the normalizing denominator.
   join_one: year_stats is (
-    titles_table -> {
+    movies -> {
       group_by: startYear
       aggregate:
         year_votes is numVotes.sum()

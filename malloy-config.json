@@ -5,8 +5,11 @@
     },
     "md": {
       "is": "duckdb",
-      "motherDuckToken": {"env": "MALLOYYO_TOKEN"},
+      "motherDuckToken": {"env": "MOTHERDUCK_MALLOYYO_TOKEN"},
       "databasePath": "md:mayolo:"
     }
+  },
+  "malloyyo": { 
+    "image_hosts": ["image.tmdb.org"] 
   }
 }

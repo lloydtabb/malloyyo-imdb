@@ -2,7 +2,8 @@
 
 // storage sources — data/ in this repo, via project-relative paths.
 // gs.malloy (GCS) and md.malloy (MotherDuck) define the same source names.
-import "storage.malloy"
+//import "storage.malloy"
+import "gs.malloy"
 
 given:
   # label="Name" suggest{query=name_options dimension=name}
