@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Director Peaks · malloyyo-imdb</title>
+<link rel="stylesheet" href="./assets/site.css">
+
+</head>
+<body>
+<nav class="dash-nav"><a class="brand" href="./" title="Home" aria-label="Home"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 10.2 12 3.5l9 6.7"/><path d="M5.2 8.9V20h13.6V8.9"/><path d="M9.6 20v-6.2h4.8V20"/></svg></a><div class="dash-pick" data-open="0"><button type="button" aria-haspopup="menu" aria-expanded="false" title="All datasets and dashboards"><span class="ds">IMDb</span><span class="slash">/</span><span class="lbl">Director Peaks</span><svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="panel" role="menu"><div class="list"><div class="grp" data-open="1"><div class="kids"><a class="leaf" href="./imdb.index.html" data-find="imdb imdb imdb/index about">About</a><a class="leaf" href="./imdb.actresses_by_decade.html" title="The ten actresses whose films drew the most IMDb votes, for every decade" data-find="imdb imdb imdb/actresses_by_decade top actresses by decade">Top Actresses by Decade</a><a class="leaf on" href="./imdb.director_peaks.html" title="How old was each director when they made the film that dominated its year" data-find="imdb imdb imdb/director_peaks director peaks">Director Peaks</a><a class="leaf" href="./imdb.genre_pairs.html" title="Pick a genre and see its strongest pairings, shelf by shelf" data-find="imdb imdb imdb/genre_pairs genre combinations">Genre Combinations</a><a class="leaf" href="./imdb.works_together.html" title="Find people that worked together, filter on name (e.g. where: name = 'Tom Hanks')" data-find="imdb imdb imdb/works_together people that worked together">People that worked together</a><a class="leaf" href="./imdb.about.html" title="About malloyyo-imdb — how it's built and where the data comes from." data-find="imdb imdb imdb/about about">About</a></div></div></div></div></div></nav>
+<script>
+(function(){
+  var p=document.querySelector('.dash-pick'); if(!p) return;
+  var btn=p.querySelector(':scope>button'), inp=p.querySelector('.filter input');
+  var grps=[].slice.call(p.querySelectorAll('.grp'));
+  var none=p.querySelector('.empty');
+  // How the page rendered: which branch holds the dashboard you are on. A
+  // cleared search restores this rather than whatever the search expanded.
+  var init=grps.map(function(g){return g.dataset.open==='1';});
+  function setOpen(g,on){
+    g.dataset.open=on?'1':'0';
+    var b=g.querySelector('.branch'); if(b) b.setAttribute('aria-expanded',on?'true':'false');
+  }
+  function openState(on){
+    p.dataset.open=on?'1':'0';
+    btn.setAttribute('aria-expanded',on?'true':'false');
+    if(!on&&inp){inp.value='';apply('');}
+    if(on&&inp){inp.focus();}
+  }
+  function apply(q){
+    q=q.trim().toLowerCase();
+    var hits=0;
+    grps.forEach(function(g,i){
+      var ds=g.dataset.ds||'', dsHit=!!q&&ds.indexOf(q)>=0;
+      var any=false;
+      [].slice.call(g.querySelectorAll('.leaf')).forEach(function(a){
+        var hit=!q||dsHit||(a.dataset.find||'').indexOf(q)>=0;
+        a.style.display=hit?'':'none'; if(hit){any=true;hits++;}
+      });
+      g.style.display=any?'':'none';
+      // While searching, everything that survived is open; with the box empty,
+      // back to how the page rendered.
+      setOpen(g,q?any:init[i]);
+    });
+    if(none) none.hidden=!q||hits>0;
+  }
+  btn.addEventListener('click',function(e){e.stopPropagation();openState(p.dataset.open!=='1');});
+  grps.forEach(function(g){
+    var b=g.querySelector('.branch'); if(!b) return;
+    b.addEventListener('click',function(e){
+      e.stopPropagation();
+      setOpen(g,g.dataset.open!=='1');
+    });
+  });
+  if(inp){inp.addEventListener('input',function(){apply(inp.value);});
+          inp.addEventListener('click',function(e){e.stopPropagation();});}
+  // Chrome inside the panel is not a dismissal — padding and the filter row's
+  // margin used to bubble to the document handler and close the menu.
+  var panel=p.querySelector('.panel');
+  if(panel) panel.addEventListener('click',function(e){e.stopPropagation();});
+  document.addEventListener('click',function(){ if(p.dataset.open==='1') openState(false); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') openState(false); });
+})();
+</script>
+<div id="root"></div>
+<script>
+window.__DASHBOARD__ = {"name":"imdb.director_peaks","query":"director_peaks_dash","title":"Director Peaks","description":"How old was each director when they made the film that dominated its year","entryFile":"datasets/imdb/dashboards/director_peaks.malloy"};
+// Given SPECS (label/type/default/suggest) are introspected from the model's
+// given: declarations at BUILD time — the runtime reads them from here to draw
+// controls and seed initial values. Without them there are no controls and
+// every given starts empty.
+window.__GIVENS__ = [{"name":"GENRE","type":"filter\u003cstring\u003e","filterType":"string","default":"","tags":{"label":"Genre"},"suggest":{"source":"movies","dimension":"genre"}},{"name":"MIN_YEAR_TITLES","type":"filter\u003cnumber\u003e","filterType":"number","default":"\u003e= 20","tags":{"label":"Min Titles in Release Year"}},{"name":"MIN_FILMS","type":"filter\u003cnumber\u003e","filterType":"number","default":"\u003e= 3","tags":{"label":"Min Films by Director"}}];
+// __INITIAL_GIVENS__ is NOT set here on purpose: the entry bundle sets it from
+// location.search using shared/givens-url, the same encoder the dev server uses.
+// An inline copy is what drifted last time (it stripped the dollar-sign prefix
+// the runtime keys off, so every shareable link fell back to defaults).
+</script>
+<script src="./assets/model-files.js"></script>
+<script type="module" src="./assets/imdb.director_peaks.js"></script>
+</body>
+</html>

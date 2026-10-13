@@ -1,0 +1,53 @@
+##! experimental.virtual_source experimental.persistence experimental.join_types experimental.givens experimental.access_modifiers
+import "../index.malloy"
+
+// The ten actresses whose films drew the most IMDb votes, decade by decade.
+//
+// "Actress" is IMDb's principals category, so this reads the role on the film,
+// not a gender field (the dataset has none). A person billed as `actress` on a
+// title is counted for that title.
+//
+// Votes are numVotes.sum() over the title — a symmetric aggregate, so the
+// principals join fan-out can't double-count a film. Grouping on nconst beside
+// name keeps two people who share a primaryName apart.
+//
+// Everything comes back in one query: a row per decade nesting its top ten, and
+// under each actress her most-voted film of that decade. The component picks
+// the decade client-side, so switching decades costs nothing.
+
+#" The ten actresses whose films drew the most IMDb votes, for every decade
+# artifact { title="Top Actresses by Decade" }
+query: actresses_by_decade is movies -> {
+  where: job = 'actress' and release_year >= 1920
+  group_by: decade is floor(release_year / 10) * 10
+  aggregate:
+    title_count
+    # label="Votes"
+    total_votes is numVotes.sum()
+  nest: actresses is {
+    group_by:
+      name
+      principals.nconst
+      name_url
+    aggregate:
+      # label="Votes"
+      total_votes is numVotes.sum()
+      title_count
+      average_rating
+    nest: top_film is {
+      group_by:
+        title
+        release_year
+        movie_thumb
+        movie_url
+      aggregate:
+        # label="Votes"
+        total_votes is numVotes.max()
+      order_by: total_votes desc
+      limit: 1
+    }
+    order_by: total_votes desc
+    limit: 10
+  }
+  order_by: decade
+}
