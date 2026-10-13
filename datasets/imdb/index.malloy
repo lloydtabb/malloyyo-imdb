@@ -1,2 +1,5 @@
+##" IMDb movies, people and their roles — titles, ratings, genres, casts and crews, refreshed weekly.
+## dataset { title="IMDb" }
+
 import {movies, NAME, TITLE, GENRE, name_options, titles_per_year} from './imdb.malloy'
 export {movies, NAME, TITLE, GENRE, name_options, titles_per_year}

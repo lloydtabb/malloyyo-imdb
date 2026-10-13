@@ -1,0 +1,2 @@
+# Keep the GitHub Pages build out of `malloyyo publish` (and GitHub archives).
+/docs/ export-ignore
